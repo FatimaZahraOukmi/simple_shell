@@ -1,1 +1,14 @@
-Running tests
+builtins.c
+find_path.c
+hbtlib.c
+helper_functions.c
+hsh
+man_1_simple_shell
+output.txt
+parsing_functions.c
+print_number.c
+processes.txt
+README.md
+shell.c
+shell.h
+test.txt
