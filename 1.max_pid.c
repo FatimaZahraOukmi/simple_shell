@@ -1,19 +1,27 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX_BUF 256
 
-int main()
+int main(int ac, char **av)
 {
 	char buf[MAX_BUF];
 	FILE *fp;
 
-	fp = fopen("/proc/sys/kernel/pid_max", "r");
-	if (fp == NULL)
+	if (ac != 2)
 	{
-		printf("Error: could not open /proc/sys/kernel/pid_max\n");
+		printf("Usage: %s <filename>\n", av[0]);
 		exit(1);
 	}
+
+	fp = fopen(av[1], "r");
+	if (fp == NULL)
+	{
+		printf("Error: could not open file %s\n", av[1]);
+		exit(1);
+	}
+	
 	fgets(buf, MAX_BUF, fp);
 	fclose(fp);
 	
