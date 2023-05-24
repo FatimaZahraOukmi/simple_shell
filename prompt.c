@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main()
+int main(void)
 {
-	char* command = NULL;
+	char *command = NULL;
 	size_t bufsize = 0;
 	printf("$ ");
 	fflush(stdout); /* Flush stdout to ensure prompt is displayed*/
@@ -13,7 +13,7 @@ int main()
 	{
 		printf("Error reading input.\n");
 		free(command);
-		return 1;
+		return (1);
 	}
 
 	printf("Command: %s", command);

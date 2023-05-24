@@ -21,10 +21,10 @@ int main(int ac, char **av)
 		printf("Error: could not open file %s\n", av[1]);
 		exit(1);
 	}
-	
+
 	fgets(buf, MAX_BUF, fp);
 	fclose(fp);
-	
+
 	printf("Maximum PID value: %s", buf);
 	return (0);
 }
