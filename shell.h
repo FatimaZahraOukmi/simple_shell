@@ -15,15 +15,15 @@
  */
 typedef struct builtin_d
 {
-        char *built;
-        void (*f)(char *);
+	char *built;
+	void (*f)(char *);
 } builtin_t;
 
 extern char **environ;
 
 char **token_interface(char *, const char *, int);
 int count_token(char *, const char *);
-char **tokenize(int, char *, const char *);
+char **tokenize(char *, const char *, int *);
 void create_child(char **, char *, int, char **);
 void parse_line(char *, size_t, int, char **);
 char *path_finder(char *);
