@@ -1,3 +1,5 @@
+#include <sys/types.h>
+#include <sys/stat.h>
 #include "shell.h"
 
 /**
@@ -101,12 +103,15 @@ char **tokenize_path(int index, char *str)
  * Return: Upon success a string with the upper most directory containing
  * the command file. Otherwise returns NULL.
  */
-char *search_directories(char **path_tokens, char *command)
+char *search_directories(char **directories, char *command)
 {
-	int i, s;
+	int i;
 	char *cwd;
 	char *buf;
 	size_t size;
+	char *path = NULL;
+	char **path_tokens = tokenize_path(path_count, path);
+	int s;
 	struct stat stat_buf;
 
 	buf = NULL;

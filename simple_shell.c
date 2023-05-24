@@ -1,50 +1,39 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-#define BUFFER_SIZE 1024
+#include "shell.h"
 
 int main(void)
 {
-	char buffer[BUFFER_SIZE];
-	char *args[64];
-	int i, status;
+	char *line = NULL;
+	size_t len = 0;
+	int status = 1;
 
-	while (1)
+	while (status)
 	{
-	printf("#cisfun$ ");
-	fgets(buffer, BUFFER_SIZE, stdin);
+		char buffer[1024];
+		char *args[64];
+		int i = 0;
 
-	buffer[strcspn(buffer, "\n")] = '\0';
-
-	char *token = strtok(buffer, " ");
-	i = 0;
-	while (token != NULL)
-	{
-		args[i] = token;
-		token = strtok(NULL, " ");
-		i++;
-	}
-	args[i] = NULL;
-
-	pid_t pid = fork();
-
-	if (pid == -1)
-	{
-		perror("Fork error");
-		exit(EXIT_FAILURE);
-	} else if (pid == 0)
-	{
-		if (execvp(args[0], args) == -1)
+		printf("%s", PROMPT);
+		if (getline(&line, &len, stdin) == -1)
 		{
-			perror("Execution error");
-			exit(EXIT_FAILURE);
+			if (isatty(STDIN_FILENO))
+				printf("\n");
+			break;
 		}
-	} else
-	{
-		waitpid(pid, &status, 0);
+
+		line = remove_newline(line);
+		args[0] = strtok(line, " ");
+		while (args[i] != NULL)
+		{
+			i++;
+			args[i] = strtok(NULL, " ");
+		}
+
+		if (is_builtin(args[0]))
+			status = execute_builtin(args);
+		else
+			status = execute_external(args);
 	}
 
+	free(line);
 	return (0);
 }

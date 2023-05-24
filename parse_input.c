@@ -1,38 +1,28 @@
 #include "shell.h"
 
-/**
- * parse_input - Tokenizes input line into separate arg.
- * @line: input line to be parsed.
- * Return: An array of str (arguments) terminated by a NULL pointer.
- */
 char **parse_input(char *line)
 {
-	const char *delimiters = " \t\n";
-	char *token;
-	char **args;
-	int token_count = 0;
+	int token_count = count_token(line, " ");
+	char **tokens = NULL;
+	char *token = NULL;
+	int i;
 
-	if (line == NULL)
+	tokens = malloc((token_count + 1) * sizeof(char *));
+	if (tokens == NULL)
 		return (NULL);
 
-	token = strtok(line, delimiters);
-	while (token != NULL)
+	token = strtok(line, " ");
+	for (i = 0; i < token_count; i++)
 	{
-		token_count++;
-		token = strtok(NULL, delimiters);
+		tokens[i] = _strdup(token);
+		if (tokens[i] == NULL)
+		{
+			double_free(tokens);
+			return (NULL);
+		}
+		token = strtok(NULL, " ");
 	}
+	tokens[i] = NULL;
 
-	args = malloc((token_count + 1) * sizeof(char *));
-	if (args == NULL)
-		return (NULL);
-
-	token = strtok(line, delimiters);
-	for (int i = 0; i < token_count; i++)
-	{
-		args[i] = token;
-		token = strtok(NULL, delimiters);
-	}
-	args[token_count] = NULL;
-
-	return (args);
+	return (tokens);
 }
