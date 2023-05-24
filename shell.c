@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
+#include <stdio.h>
 
 void parse_line(char *line, size_t size, int command_counter, char **av);
 void create_child(char **param_array, char *line, int count, char **av);
@@ -38,7 +39,7 @@ void parse_line(char *line, size_t size, int command_counter, char **av)
 
 	token_count = 0;
 	write(STDOUT_FILENO, PROMPT, str_len(PROMPT));
-	read_len = getline(&line, &size, stdin);
+	read_len = getline (&line, &size, stdin);
 	if (read_len != -1)
 	{
 		param_array = tokenize(line, delim, &token_count);
@@ -115,9 +116,10 @@ char **tokenize(char *line, const char *delim, int *token_count)
 		return (NULL);
 
 	token = strtok(line, delim);
+	char **param_array = malloc(sizeof(char*) * (token_count + 1));
 	for (i = 0; token != NULL; i++)
 	{
-		param_array[i] = _strdup(token);
+		param_array [i] = _strdup(token);
 		if (param_array[i] == NULL)
 		{
 			double_free(param_array);
