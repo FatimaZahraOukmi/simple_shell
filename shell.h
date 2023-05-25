@@ -1,56 +1,89 @@
-#ifndef _shell_h_
-#define _shell_h_
+#ifndef _SHELL_H_
+#define _SHELL_H_
 
-#include <stdio.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/wait.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
+#include <errno.h>
+#include <stdio.h>
 
-#define PROMPT "shell $ "
+#define END_OF_FILE -2
+#define EXIT -3
 
-/**
- * struct builtin_d - Defines the builtins functions.
- * @built: The name of the build in command.
- * @f: A pointer to the right builtin function.
- */
-typedef struct builtin_d
-{
-	char *built;
-	void (*f)(char *);
-} builtin_t;
+/* Main Helpers */
+ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+char **_strtok(char *line, char *delim);
+char *get_location(char *command);
+list_t *get_path_dir(char *path);
+int execute(char **args, char **front);
+void free_list(list_t *head);
+char *_itoa(int num);
 
-extern char **environ;
+/* Input Helpers */
+void handle_line(char **line, ssize_t read);
+void variable_replacement(char **args, int *exe_ret);
+char *get_args(char *line, int *exe_ret);
+int call_args(char **args, char **front, int *exe_ret);
+int run_args(char **args, char **front, int *exe_ret);
+int handle_args(int *exe_ret);
+int check_args(char **args);
+void free_args(char **args, char **front);
+char **replace_aliases(char **args);
 
-char **token_interface(char *, const char *, int);
-int count_token(char *, const char *);
-char **tokenize(char *, const char *, int *);
-void create_child(char **, char *, int, char **);
-void parse_line(char *, size_t, int, char **);
-char *path_finder(char *);
-int str_len(char *);
-int find_path(char *);
-char **tokenize_path(int, char *);
-char *search_directories(char **, char *);
-char *build_path(char *, char *);
-void double_free(char **);
-void single_free(int, ...);
+/* String functions */
+int _strlen(const char *s);
+char *_strcat(char *dest, const char *src);
+char *_strncat(char *dest, const char *src, size_t n);
+char *_strcpy(char *dest, const char *src);
+char *_strchr(char *s, char c);
+int _strspn(char *s, char *accept);
+int _strcmp(char *s1, char *s2);
+int _strncmp(const char *s1, const char *s2, size_t n);
 
-/* Builtin functions */
-int built_in(char **, char *);
-void (*check_built_ins(char *))(char *);
-void exit_b(char *);
-void env_b(char *);
-void cd_b(char *);
+/* Builtins */
+int (*get_builtin(char *command))(char **args, char **front);
+int shellby_exit(char **args, char **front);
+int shellby_env(char **args, char __attribute__((__unused__)) **front);
+int shellby_setenv(char **args, char __attribute__((__unused__)) **front);
+int shellby_unsetenv(char **args, char __attribute__((__unused__)) **front);
+int shellby_cd(char **args, char __attribute__((__unused__)) **front);
+int shellby_alias(char **args, char __attribute__((__unused__)) **front);
+int shellby_help(char **args, char __attribute__((__unused__)) **front);
 
-/* Library functions */
-int _strcmp(char *, char *);
-char *_strdup(char *);
-void print_str(char *, int);
-int print_number(int);
-int _write_char(char);
+/* Builtin Helpers */
+char **_copyenv(void);
+void free_env(void);
+char **_getenv(const char *var);
 
-/* Helper functions */
-void error_printing(char *, int, char *);
-void exec_error(char *, int, char *);
+/* Error Handling */
+int create_error(char **args, int err);
+char *error_env(char **args);
+char *error_1(char **args);
+char *error_2_exit(char **args);
+char *error_2_cd(char **args);
+char *error_2_syntax(char **args);
+char *error_126(char **args);
+char *error_127(char **args);
 
-#endif
+/* Linkedlist Helpers */
+alias_t *add_alias_end(alias_t **head, char *name, char *value);
+void free_alias_list(alias_t *head);
+list_t *add_node_end(list_t **head, char *dir);
+void free_list(list_t *head);
+
+void help_all(void);
+void help_alias(void);
+void help_cd(void);
+void help_exit(void);
+void help_help(void);
+void help_env(void);
+void help_setenv(void);
+void help_unsetenv(void);
+void help_history(void);
+
+int proc_file_commands(char *file_path, int
