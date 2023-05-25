@@ -1,6 +1,10 @@
 #ifndef SHELL_H
 #define SHELL_H
 
+/** macros **/
+
+#include "macros.h" /* for msg help and prompt */
+
 #include <stdio.h> /* for printf*/
 #include <unistd.h> /* for fork, execve*/
 #include <stdlib.h>
@@ -12,10 +16,6 @@
 #include <sys/stat.h> /* for use of stat function */
 #include <signal.h> /* for signal management */
 #include <fcntl.h> /* for open files*/
-
-/** macros **/
-
-#include "macros.h" /* for msg help and prompt */
 
 /** structures **/
 
