@@ -1,11 +1,15 @@
 #include <stdio.h>
+#include "Env_vs_environ.h"
 
-extern char **environ;
-
-int main(int argc, char *argv[], char *env[])
+int main(void)
 {
-	printf("Address of env: %p\n", env);
-	printf("Address of environ: %p\n", environ);
+	someVariable = 10;
+	someFunction(someVariable);
 
 	return (0);
+}
+
+void someFunction(int variable)
+{
+	printf("The value of someVariable is: %d\n", variable);
 }

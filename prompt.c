@@ -1,22 +1,18 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 int main(void)
 {
-	char *command = NULL;
-	size_t bufsize = 0;
-	printf("$ ");
-	fflush(stdout); /* Flush stdout to ensure prompt is displayed*/
+	int num1, num2, sum;
 
-	ssize_t line_size = getline(&command, &bufsize, stdin);
-	if (line_size == -1)
-	{
-		printf("Error reading input.\n");
-		free(command);
-		return (1);
-	}
+	printf("Enter first number: ");
+	scanf("%d", &num1);
 
-	printf("Command: %s", command);
-	free(command);
+	printf("Enter second number: ");
+	scanf("%d", &num2);
+
+	sum = num1 + num2;
+
+	printf("Sum: %d\n", sum);
+
 	return (0);
 }

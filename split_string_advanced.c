@@ -2,71 +2,80 @@
 #include <stdlib.h>
 #include <string.h>
 
-char **splitString(const char *str, const char *delimiter, int *count)
-{
-	/* Calculate the number of words in the string*/
-	int numWords = 1; /*At least one word*/
-	const char *ptr = str;
-	while (*ptr)
-	{
-		if (strchr(delimiter, *ptr))
-		{
-			/*Found a delimiter*/
-			numWords++;
-		}
-		ptr++;
-	}
+#define MAX_TOKENS 100
 
-	/*Allocate memory for the array of words*/
-	char **words = (char **)malloc(numWords * sizeof(char *));
-	if (!words)
-	{
-		printf("Memory allocation failed.\n");
-		*count = 0;
-		return (NULL);
-	}
 
-	int index = 0;
-	int wordStart = 0;
-	int wordLength = 0;
-	for (int i = 0; i <= strlen(str); i++)
-	{
-		if (strchr(delimiter, str[i]) || str[i] == '\0')
-		{
-			/*Found a delimiter or end of string*/
-			wordLength = i - wordStart;
+/*
+ * Splits a string into multiple substrings based on a delimiter.
+ * Returns an array of substrings.
+ *
+ * Parameters:
+ *   str: The string to be split.
+ *   delim: The delimiter used to split the string.
+ *
+ * Returns:
+ *   An array of substrings.
+ */
+char **split_string(char *str, const char *delim);
 
-			/*Allocate memory for the word and copy it*/
-			words[index] = (char *)malloc((wordLength + 1) * sizeof(char));
-			strncpy(words[index], &str[wordStart], wordLength);
-			words[index][wordLength] = '\0';
-
-			index++;
-			wordStart = i + 1;
-		}
-	}
-
-	*count = numWords;
-	return (words);
-}
-
+/*
+ * The main function is the entry point of the program.
+ * It reads a str input from user, splits it into tokens using a delimiter,
+ * and prints each token.
+ *
+ * Returns:
+ *   0 on successful execution.
+ */
 int main(void)
 {
-	const char *str = "This is a sample string.";
-	const char *delimiter = " ";
-	int count = 0;
-	char **words = splitString(str, delimiter, &count);
+	char input[100];
 
-	if (words)
+	printf("Enter a string: ");
+
+	fgets(input, sizeof(input), stdin);
+	input[strcspn(input, "\n")] = '\0';
+
+	char **tokens = split_string(input, " ");
+	int i = 0;
+
+	while (tokens[i] != NULL)
 	{
-		printf("Number of words: %d\n", count);
-		for (int i = 0; i < count; i++)
-		{
-			printf("Word %d: %s\n", i + 1, words[i]);
-			free(words[i]);
-		}
-		free(words);
+		printf("Token %d: %s\n", i, tokens[i]);
+		free(tokens[i]);
+		i++;
 	}
+	free(tokens);
 
 	return (0);
+}
+
+/*
+ * Splits a str into multiple substrings based on a delimiter.
+ * Returns an array of dynamically allocated str.
+ *
+ * Parameters:
+ *   str: The str to be split.
+ *   delim: The delimiter used to split the str.
+ *
+ * Returns:
+ *   An array of dynamically allocated str, representing the tokens.
+ *   The last element of the array is NULL.
+ */
+char **split_string(char *str, const char *delim)
+{
+	char **tokens = (char **)malloc(MAX_TOKENS * sizeof(char *));
+	int token_count = 0;
+
+	char *token = strtok(str, delim);
+
+	while (token != NULL)
+	{
+		tokens[token_count] = (char *)malloc((strlen(token) + 1) * sizeof(char));
+		strcpy(tokens[token_count], token);
+		token_count++;
+		token = strtok(NULL, delim);
+	}
+	tokens[token_count] = NULL;
+
+	return (tokens);
 }
